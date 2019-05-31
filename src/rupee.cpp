@@ -133,10 +133,14 @@ void output() {
 	gettimeofday(&Stats::endTime, NULL);
 	if(Checker::isVerified(Objects::Checker)) {
 		Blablabla::comment("s ACCEPTED");
-		Witness::extractWitness(Objects::Checker.tvr, Objects::Database);
+		if(Parameters::generateLrat) {
+			Witness::extractWitness(Objects::Checker.tvr, Objects::Database);
+		}
 	} else {
 		Blablabla::comment("s REJECTED");
-		Recheck::extractRecheck(Objects::Checker.kk, Objects::Database);
+		if(Parameters::recheck) {
+			Recheck::extractRecheck(Objects::Checker.kk, Objects::Database);
+		}
 	}
 	std::cout << "nf " << Stats::premiseLength << std::endl;
 	std::cout << "np " << Stats::proofLength << std::endl;

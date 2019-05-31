@@ -195,16 +195,16 @@ bool reviseWatches(watchlist& wl, model& m, long offset, int* pointer, int liter
     Blablabla::log("Revising clause " + Blablabla::clauseToString(pointer));
     Blablabla::increase();
     #endif
-    if(pointer[1] == literal) {
-        pointer[1] = pointer[0];
-        pointer[0] = literal;
+    if(*pointer == literal) {
+        pointer[0] = pointer[1];
+        pointer[1] = literal;
     }
-    if(Model::isFalsified(m, pointer[1])) {
+    if(Model::isFalsified(m, *pointer)) {
         firstptr = pointer + 2;
         if(Database::nextNonFalsified(firstptr, firstlit, m)) {
-            *firstptr = literal;
+            *firstptr = *pointer;
             *pointer = firstlit;
-            removeWatch(wl, literal, watch);
+            removeWatch(wl, *firstptr, watch);
             if(!addWatch(wl, firstlit, offset)) { return false; }
             #ifdef VERBOSE
             Blablabla::log("Setting watches: " + Blablabla::clauseToString(pointer));
@@ -215,6 +215,26 @@ bool reviseWatches(watchlist& wl, model& m, long offset, int* pointer, int liter
             #endif
             Model::propagateLiteral(m, literal, offset, pointer, Constants::HardPropagation);
         }
+    // if(pointer[1] == literal) {
+    //     pointer[1] = pointer[0];
+    //     pointer[0] = literal;
+    // }
+    // if(Model::isFalsified(m, pointer[1])) {
+    //     firstptr = pointer + 2;
+    //     if(Database::nextNonFalsified(firstptr, firstlit, m)) {
+    //         *firstptr = literal;
+    //         *pointer = firstlit;
+    //         removeWatch(wl, literal, watch);
+    //         if(!addWatch(wl, firstlit, offset)) { return false; }
+    //         #ifdef VERBOSE
+    //         Blablabla::log("Setting watches: " + Blablabla::clauseToString(pointer));
+    //         #endif
+    //     } else {
+    //         #ifdef VERBOSE
+    //         Blablabla::log("Triggered clause");
+    //         #endif
+    //         Model::propagateLiteral(m, literal, offset, pointer, Constants::HardPropagation);
+    //     }
     } else {
         #ifdef VERBOSE
         Blablabla::log("Watches are correct");
