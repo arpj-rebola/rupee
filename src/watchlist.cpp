@@ -204,7 +204,7 @@ bool reviseWatches(watchlist& wl, model& m, long offset, int* pointer, int liter
         if(Database::nextNonFalsified(firstptr, firstlit, m)) {
             *firstptr = *pointer;
             *pointer = firstlit;
-            removeWatch(wl, *firstptr, watch);
+            removeWatch(wl, literal, watch);
             if(!addWatch(wl, firstlit, offset)) { return false; }
             #ifdef VERBOSE
             Blablabla::log("Setting watches: " + Blablabla::clauseToString(pointer));
@@ -215,26 +215,6 @@ bool reviseWatches(watchlist& wl, model& m, long offset, int* pointer, int liter
             #endif
             Model::propagateLiteral(m, literal, offset, pointer, Constants::HardPropagation);
         }
-    // if(pointer[1] == literal) {
-    //     pointer[1] = pointer[0];
-    //     pointer[0] = literal;
-    // }
-    // if(Model::isFalsified(m, pointer[1])) {
-    //     firstptr = pointer + 2;
-    //     if(Database::nextNonFalsified(firstptr, firstlit, m)) {
-    //         *firstptr = literal;
-    //         *pointer = firstlit;
-    //         removeWatch(wl, literal, watch);
-    //         if(!addWatch(wl, firstlit, offset)) { return false; }
-    //         #ifdef VERBOSE
-    //         Blablabla::log("Setting watches: " + Blablabla::clauseToString(pointer));
-    //         #endif
-    //     } else {
-    //         #ifdef VERBOSE
-    //         Blablabla::log("Triggered clause");
-    //         #endif
-    //         Model::propagateLiteral(m, literal, offset, pointer, Constants::HardPropagation);
-    //     }
     } else {
         #ifdef VERBOSE
         Blablabla::log("Watches are correct");
@@ -309,61 +289,6 @@ bool resetWatches(watchlist& wl, model& m, long offset, int* pointer, int litera
         ++watch;
     }
     return true;
-    // if(literal == *pointer) {
-    //     #ifdef VERBOSE
-    //     Blablabla::log("Resetting clause " + Blablabla::clauseToString(pointer));
-    //     Blablabla::increase();
-    //     #endif
-    //     otherlit = pointer[1];
-    //     firstptr = pointer;
-    //     bestptr = pointer;
-    //     bestpos = NULL;
-    //     if(!Database::findWatch(firstptr, bestptr, bestpos, m)) {
-    //         #ifdef VERBOSE
-    //         Blablabla::log("Clause is falsified, invariant is broken");
-    //         #endif
-    //         Blablabla::comment("Error during invariant maintenance");
-    //         return false;
-    //     }
-    //     firstlit = *firstptr;
-    //     secondptr = firstptr + 1;
-    //     if(!Database::findWatch(secondptr, bestptr, bestpos, m)) {
-    //         if(firstptr > bestptr) {
-    //             *firstptr = *bestptr;
-    //             *bestptr = firstlit;
-    //             secondptr = firstptr;
-    //             firstptr = bestptr;
-    //         } else {
-    //             secondptr = bestptr;
-    //         }
-    //     }
-    //     secondlit = *secondptr;
-    //     if(firstlit == literal || secondlit == literal) {
-    //         ++watch;
-    //     } else {
-    //         removeWatch(wl, literal, watch);
-    //     }
-    //     if(firstlit != otherlit && secondlit != otherlit) {
-    //         findAndRemoveWatch(wl, otherlit, offset);
-    //     }
-    //     if(firstlit != literal && firstlit != otherlit) {
-    //         if(!addWatch(wl, firstlit, offset)) { return false; }
-    //     }
-    //     if(secondlit != literal && secondlit != otherlit) {
-    //         if(!addWatch(wl, secondlit, offset)) { return false; }
-    //     }
-    //     *firstptr = pointer[0];
-    //     pointer[0] = firstlit;
-    //     *secondptr = pointer[1];
-    //     pointer[1] = secondlit;
-    //     #ifdef VERBOSE
-    //     Blablabla::log("Setting watches: " + Blablabla::clauseToString(pointer));
-    //     Blablabla::decrease();
-    //     #endif
-    // } else {
-    //     ++watch;
-    // }
-    // return true;
 }
 
 //----------------------
