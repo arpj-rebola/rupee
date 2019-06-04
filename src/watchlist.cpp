@@ -204,7 +204,7 @@ bool reviseWatches(watchlist& wl, model& m, long offset, int* pointer, int liter
         if(Database::nextNonFalsified(firstptr, firstlit, m)) {
             *firstptr = *pointer;
             *pointer = firstlit;
-            removeWatch(wl, literal, watch);
+            findAndRemoveWatch(wl, *pointer, offset);
             if(!addWatch(wl, firstlit, offset)) { return false; }
             #ifdef VERBOSE
             Blablabla::log("Setting watches: " + Blablabla::clauseToString(pointer));
